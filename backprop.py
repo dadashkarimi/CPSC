@@ -102,8 +102,8 @@ class RecursiveNeuralNet:
         # add gradient from current node for classifier weights and biases
         # i.e., add to self.dWs and self.dbs the respective gradients from this node
         # Hint: You will find the derivatives in the spec helpful
-        #self.dWs += np.dot(deltas,node.h.T)
-        self.dWs += np.outer(deltas,node.h)
+        self.dWs += np.dot(deltas,node.h.T)
+        #self.dWs += np.outer(deltas,node.h)
         self.dbs += deltas
         # YOUR CODE HERE
         pass
@@ -120,17 +120,17 @@ class RecursiveNeuralNet:
         # backpropagate the deltas through the Relu layer to get deltas_relu
 
         # YOUR CODE HERE
-        pass
         # END YOUR CODE
         #if errors is not None:
-        deltas_relu = np.multiply(deltas, node.h!=0)
+        deltas[node.h<=0.0]=0.0
+        deltas_relu = deltas#np.multiply(deltas, node.h>=0)
         #deltas = np.multiply(deltas, self.relu(node.h))
         # if node is a leaf
         if node.isLeaf:
             # add deltas_relu to gradient for the current word's embedding
             word_id = self.vocab.encode(node.word)
 
-            new_embedding_grad = self.dL[word_id].reshape((self.hiddenDim, 1)) + deltas
+            new_embedding_grad = self.dL[word_id].reshape((self.hiddenDim, 1)) + deltas_relu
             self.dL[word_id] = new_embedding_grad.T.reshape((self.hiddenDim,))
 
             return
@@ -142,10 +142,10 @@ class RecursiveNeuralNet:
 
             # YOUR CODE HERE
             #a = np.concatenate((node.left.h,node.right.h),axis=0)
-            a = np.concatenate([node.left.h,node.right.h],axis=-1)
-            b = a.reshape(a.shape[0]*a.shape[1],1)
-            self.dW += np.dot(deltas,b.T)
-            self.db +=deltas
+            a = np.concatenate([node.left.h,node.right.h])
+            #b = a.reshape(a.shape[0]*a.shape[1],1)
+            self.dW += np.dot(deltas_relu,a.T)
+            self.db +=deltas_relu
 
 
             
@@ -154,12 +154,12 @@ class RecursiveNeuralNet:
             # END YOUR CODE
 
             # compute deltas for children nodes
-            deltas = np.dot(self.W.T, deltas)
+            deltas_relu = np.dot(self.W.T, deltas_relu)
 
             # recursively backprop deltas to children node,
             # remember to split the deltas vectors into 2 halves, one for each child
-            self.backward_prop(node.left, deltas[:self.hiddenDim])
-            self.backward_prop(node.right, deltas[self.hiddenDim:])
+            self.backward_prop(node.left, deltas_relu[:int(deltas_relu.shape[0]/2)])
+            self.backward_prop(node.right, deltas_relu[int(deltas_relu.shape[0]/2):])
             # YOUR CODE HERE
             pass
             # END YOUR CODE

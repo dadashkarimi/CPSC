@@ -25,7 +25,7 @@ class Config(object):
     early_stopping = 2
     anneal_threshold = 0.99
     anneal_by = 1.5
-    max_epochs = 0
+    max_epochs = 30
     lr = 0.01
     l2 = 0.02
     model_name = 'rnn_embed=%d_l2=%f_lr=%f.weights'%(embed_size, l2, lr)
