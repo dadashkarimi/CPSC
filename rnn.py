@@ -25,7 +25,7 @@ class Config(object):
     early_stopping = 2
     anneal_threshold = 0.99
     anneal_by = 1.5
-    max_epochs = 1
+    max_epochs = 0
     lr = 0.01
     l2 = 0.02
     model_name = 'rnn_embed=%d_l2=%f_lr=%f.weights'%(embed_size, l2, lr)
@@ -344,7 +344,7 @@ def plot_figure(data, title, savepath, labels=[]):
         savepath: the path to use for saving the plot
         labels (optional): if provided, it is a list of the x-axis and y-axis labels, respectively
     """
-    plt.plot(data)
+    plt.plot(data,color='r',ls='--')
     plt.title(title)
     plt.xlabel('number of iteration')
     plt.ylabel('loss')
