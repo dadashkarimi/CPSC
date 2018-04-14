@@ -195,7 +195,10 @@ class RNN_Model():
             train_op: tensorflow op for training.
         """
         # YOUR CODE HERE
-        return tf.train.GradientDescentOptimizer(self.config.lr).minimize(loss)
+        #return tf.train.GradientDescentOptimizer(self.config.lr).minimize(loss)
+        op= tf.train.AdamOptimizer(self.config.lr).minimize(loss)
+        tf.get_variable_scope().reuse_variables()
+        return op
 
         # END YOUR CODE
 
@@ -257,6 +260,7 @@ class RNN_Model():
                     labels = [l for l in tree.labels if l!=2]
                     loss = self.loss(logits, labels)
                     train_op = self.training(loss)
+                    sess.run(tf.global_variables_initializer()) ## for adam
                     loss, _ = sess.run([loss, train_op])
                     loss_history.append(loss)
                     if verbose:
