@@ -3,6 +3,8 @@ import os
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
+import matplotlib.cbook as cbook
+import matplotlib.image as image
 import matplotlib.pyplot as plt
 import math
 import time
@@ -25,7 +27,7 @@ class Config(object):
     early_stopping = 2
     anneal_threshold = 0.99
     anneal_by = 1.5
-    max_epochs = 30
+    max_epochs = 10
     lr = 0.01
     l2 = 0.02
     model_name = 'rnn_embed=%d_l2=%f_lr=%f.weights'%(embed_size, l2, lr)
@@ -35,7 +37,7 @@ class RNN_Model():
 
     def load_data(self):
         """Loads train/dev/test data and builds vocabulary."""
-        self.train_data, self.dev_data, self.test_data = tr.simplified_data(700, 100, 200)
+        self.train_data, self.dev_data, self.test_data = tr.simplified_data(200, 50, 50)#700 100 200
 
         # build vocab from training data
         self.vocab = Vocab()
@@ -344,12 +346,16 @@ def plot_figure(data, title, savepath, labels=[]):
         savepath: the path to use for saving the plot
         labels (optional): if provided, it is a list of the x-axis and y-axis labels, respectively
     """
-    plt.plot(data,color='r',ls='--')
+    #plt.plot(data,color='b',ls='-o')
+    fig, ax = plt.subplots()
+    ax.plot(data, '-o', ms=20, lw=2, alpha=0.7, mfc='orange')
+    ax.grid()
     plt.title(title)
     plt.xlabel('number of iteration')
     plt.ylabel('loss')
     plt.savefig(savepath)
-    plt.show()
+    plt.draw()
+    #plt.show()
     # YOUR CODE HERE
 
     # END YOUR CODE
