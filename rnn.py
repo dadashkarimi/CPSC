@@ -37,7 +37,7 @@ class RNN_Model():
 
     def load_data(self):
         """Loads train/dev/test data and builds vocabulary."""
-        self.train_data, self.dev_data, self.test_data = tr.simplified_data(200, 50, 50)#700 100 200
+        self.train_data, self.dev_data, self.test_data = tr.simplified_data(700, 100, 200)#700 100 200
 
         # build vocab from training data
         self.vocab = Vocab()
@@ -195,9 +195,9 @@ class RNN_Model():
             train_op: tensorflow op for training.
         """
         # YOUR CODE HERE
-        #return tf.train.GradientDescentOptimizer(self.config.lr).minimize(loss)
-        op= tf.train.AdamOptimizer(self.config.lr).minimize(loss)
-        tf.get_variable_scope().reuse_variables()
+        op= tf.train.GradientDescentOptimizer(self.config.lr).minimize(loss)
+        #op= tf.train.AdamOptimizer(self.config.lr).minimize(loss) # Adam Optimizer
+        #tf.get_variable_scope().reuse_variables()
         return op
 
         # END YOUR CODE
